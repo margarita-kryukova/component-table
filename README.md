@@ -1,46 +1,138 @@
-# Getting Started with Create React App
+## Функциональный React-компонент "Таблица"
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+Проект реализует универсальный компонент таблицы с возможностью:
+- выделения строки,
+- обработки клика по строке,
+- **добавления, редактирования и удаления записей** прямо из таблицы,
+- **пользовательской валидации полей** при добавлении или редактировании.
 
-## Available Scripts
+В проект также входит серверная часть на **Express** для хранения и изменения данных через API.
 
-In the project directory, you can run:
+---
 
-### `npm start`
+## Возможности
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+- Универсальная таблица для произвольных структур данных (вы сами задаёте список колонок и источник данных).
+- Подсветка выбранной строки.
+- Обработка клика по строке.
+- Редактирование, удаление и добавление строк через интуитивный интерфейс.
+- **Гибкая валидация значений в столбцах** с помощью свойства `validate` в описании колонки.
+- Сохранение изменений на сервере через API (Express).
+- Реализовано с помощью функциональных React-компонентов и хуков.
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+---
 
-### `npm test`
+## columns — расширенная конфигурация
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+Каждая колонка (`columns`) может содержать:
 
-### `npm run build`
+| Ключ      | Тип                                 | Описание                                                                              |
+|-----------|-------------------------------------|---------------------------------------------------------------------------------------|
+| `key`     | `string`                            | Ключ поля (имя свойства-колонки в объекте данных)                                     |
+| `title`   | `string`                            | Заголовок столбца                                                                     |
+| `validate`| `(value, row) => string\|undefined` | (опционально) функция проверки значения. Возвращает строку ошибки, если невалидно      |
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+**Пример с валидацией:**
+```js
+const columns = [
+  {
+    key: 'name', 
+    title: 'Имя',
+    validate: value =>
+      !value || value.length < 2 ? 'Имя должно быть не короче 2 символов' : undefined
+  },
+  {
+    key: 'email',
+    title: 'E-mail',
+    validate: value =>
+      !value?.includes('@') ? 'Некорректный email' : undefined
+  }
+];
+```
+Если функция `validate` вернёт строку — ошибка будет показана пользователю при добавлении или редактировании.
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+---
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+## Пример использования
 
-### `npm run eject`
+```jsx
+import Table from './Table';
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+const columns = [
+  { key: 'id', title: 'ID' },
+  { key: 'name', title: 'Имя', validate: value => !value ? "Имя обязательно" : undefined },
+  { key: 'email', title: 'E-mail', validate: value => !value?.includes('@') ? "Некорректный email" : undefined }
+];
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+const data = [
+  { id: 1, name: 'Иван', email: 'ivan@example.com' },
+  { id: 2, name: 'Мария', email: 'maria@example.com' },
+  { id: 3, name: 'Петр', email: 'peter@example.com' }
+];
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+function handleRowClick(record) {
+  alert('Вы выбрали строку: ' + JSON.stringify(record));
+}
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+function App() {
+  return (
+    <Table
+      columns={columns}
+      data={data}
+      onRowClick={handleRowClick}
+      // и другие обработчики, если нужно
+    />
+  );
+}
 
-## Learn More
+export default App;
+```
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+---
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+## Пропсы компонента Table
+
+| Проп           | Тип                              | Описание                                                                 |
+|----------------|----------------------------------|--------------------------------------------------------------------------|
+| `columns`      | `Array<Object>`                  | Массив колонок (`key`, `title`, опционально `validate`)                  |
+| `data`         | `Array<Object>`                  | Массив строк-объектов                                                    |
+| `onRowClick`   | `Function(record)`               | Обработчик клика по строке (получает объект записи)                      |
+| `onEditRecord` | `(id, newRow) => void`           | (опционально) Обновить запись                                            |
+| `onDeleteRecord` | `(id) => void`                 | (опционально) Удалить запись                                             |
+| `onAddRecord`    | `(row) => void`                | (опционально) Добавить запись                                            |
+
+---
+
+## Как запустить
+
+### 1. Сервер (Express API)
+1. Выполните команду:
+   ```sh
+   npm run start-server
+   ```
+2. По умолчанию сервер слушает порт `4000`.
+3. Сервер предоставляет полноценный API для чтения, изменения, удаления и добавления записей.
+
+### 2. Клиент (React-приложение)
+1. Выполните команду:
+    ```sh
+    npm run start
+    ```
+2. Откройте [http://localhost:3000](http://localhost:3000).
+
+---
+
+## Внешний вид
+- Таблица выделяет выбранную строку изменением цвета фона.
+- Редактирование, добавление, удаление — удобные иконки/кнопки справа от строки.  
+- Ошибки валидации (при редактировании/добалении) отображаются рядом с соответствующими полями.
+- Интерфейс минималистичен и интуитивно понятен.
+
+---
+
+## Автор
+[Мargarita Kryukova](https://github.com/margarita-kryukova)
+
+---
+
+_Тестовое задание: функциональный редактируемый компонент React-таблицы с серверной поддержкой на Express._
