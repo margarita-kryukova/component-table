@@ -79,7 +79,7 @@ function App() {
     <Table
       columns={columns}
       data={data}
-      onRowClick={handleRowClick}
+      onClickRow={handleRowClick}
       // и другие обработчики, если нужно
     />
   );
@@ -96,7 +96,7 @@ export default App;
 |----------------|----------------------------------|--------------------------------------------------------------------------|
 | `columns`      | `Array<Object>`                  | Массив колонок (`key`, `title`, опционально `validate`)                  |
 | `data`         | `Array<Object>`                  | Массив строк-объектов                                                    |
-| `onRowClick`   | `Function(record)`               | Обработчик клика по строке (получает объект записи)                      |
+| `onClickRow`   | `Function(record)`               | Обработчик клика по строке (получает объект записи)                      |
 | `onEditRecord` | `(id, newRow) => void`           | (опционально) Обновить запись                                            |
 | `onDeleteRecord` | `(id) => void`                 | (опционально) Удалить запись                                             |
 | `onAddRecord`    | `(row) => void`                | (опционально) Добавить запись                                            |
