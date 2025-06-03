@@ -1,0 +1,22 @@
+$loader-default-size: 2rem;
+$loader-thickness-divisor: 8;
+$loader-default-color: var(--color-primary);
+
+.loader {
+  --loader-size: #{$loader-default-size};
+  --loader-color: #{$loader-default-color};
+
+  display: inline-block;
+  width: var(--loader-size);
+  height: var(--loader-size);
+  border: calc(var(--loader-size) / #{$loader-thickness-divisor}) solid rgba(0, 0, 0, 0.1);
+  border-top-color: var(--loader-color);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}

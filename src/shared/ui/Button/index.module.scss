@@ -1,0 +1,69 @@
+@mixin style($bg, $color, $border: null) {
+  @if $bg != null {
+    background-color: $bg;
+  }
+  @if $color != null {
+    color: $color;
+  }
+  @if $border != null {
+    border: $border;
+  }
+}
+
+@mixin disabled-style($bg, $color, $border: null) {
+  &:disabled {
+    @if $bg != null {
+      background-color: $bg;
+    }
+    @if $color != null {
+      color: $color;
+    }
+    @if $border != null {
+      border-color: $border;
+    }
+    cursor: no-drop;
+  }
+}
+
+.button {
+  width: 100%;
+  padding: 0.5rem;
+  font-size: 1rem;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+  border: none;
+  &:focus-visible:not(:disabled) {
+    outline: 1px solid var(--main);
+    outline-offset: 0.125rem;
+  }
+
+  &:hover:not(:disabled) {
+    opacity: 0.7;
+  }
+
+  &_primary {
+    @include style(var(--main), var(--white));
+    @include disabled-style(var(--bg-grey), var(--grey));
+  }
+
+  &_secondary {
+    @include style(transparent, var(--main), 2px solid var(--main));
+    @include disabled-style(transparent, var(--grey), var(--bg-grey));
+  }
+
+  &_tonal {
+    @include style(var(--bg-violet), var(--main));
+    @include disabled-style(var(--bg-grey), null);
+  }
+
+  &_text-only {
+    @include style(transparent, var(--main));
+    @include disabled-style(transparent, null);
+    &:disabled {
+      svg {
+        color: var(--grey);
+      }
+    }
+  }
+}

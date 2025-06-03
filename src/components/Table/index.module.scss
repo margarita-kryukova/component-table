@@ -1,0 +1,150 @@
+.wrapper {
+  width: 100%;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+
+  .add-button {
+    width: 2rem;
+    height: 2rem;
+    padding: 0.25rem;
+  }
+
+  .table__button {
+    width: 2rem;
+    height: 2rem;
+    padding: 0.25rem;
+  }
+}
+.container {
+  width: 100%;
+  height: auto;
+  overflow-x: auto;
+  border: 1px solid var(--border);
+  border-radius: 0.5rem;
+
+  &::-webkit-scrollbar {
+    width: 4px;
+    height: 4px;
+  }
+  &::-webkit-scrollbar-track {
+    background: var(--bg-grey);
+    border-radius: 8px;
+  }
+  &::-webkit-scrollbar-thumb {
+    background: var(--grey);
+    border-radius: 8px;
+  }
+  &::-webkit-scrollbar-thumb:hover {
+    background: var(--bg-grey);
+  }
+  scrollbar-width: thin;
+  scrollbar-color: var(--grey) var(--bg-grey);
+}
+
+.table {
+  width: 100%;
+  border: none;
+  border-collapse: collapse;
+
+  &__head {
+    .table__cell {
+      font-weight: bold;
+    }
+  }
+
+  &__row {
+    border-bottom: 1px solid var(--border);
+    &:focus-visible,
+    &_selected {
+      background-color: var(--bg-violet) !important;
+
+      & > .table__cell:first-child {
+        position: relative;
+        &::before {
+          content: "";
+          position: absolute;
+          top: 0;
+          bottom: 0;
+          left: 0;
+          width: 0.25rem;
+          background-color: var(--main);
+        }
+      }
+    }
+
+    &:focus-visible {
+      outline: none;
+    }
+  }
+
+  &__cell {
+    position: relative;
+    padding: 0.75rem;
+    text-align: left;
+    font-size: 1rem;
+    white-space: nowrap;
+
+    &_control {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.25rem;
+    }
+
+    &_sticky {
+      position: sticky;
+      right: 0;
+      background: var(--white);
+      z-index: 2;
+      min-width: 3.5rem;
+      text-align: right;
+      box-shadow: -0.125rem 0 0.5rem -0.125rem #0002;
+    }
+
+    &_error {
+      background-color: var(--bg-red);
+    }
+
+    &:not(:last-child) {
+      border-right: 1px solid var(--border);
+    }
+  }
+
+  &__icon {
+    width: 1.5rem;
+    height: 1.5rem;
+    color: var(--grey);
+  }
+
+  &__input {
+    background-color: transparent;
+    width: 100%;
+    border: none;
+    font-size: 1rem;
+    color: var(--primary);
+
+    &:focus-visible {
+      outline: none;
+    }
+
+    &_error {
+      background-color: var(--bg-red);
+    }
+  }
+
+  .input__error {
+    position: absolute;
+    color: var(--red);
+    left: 0.08rem;
+    top: calc(100% - 1rem);
+    font-size: 0.75rem;
+    max-width: 100%;
+    white-space: normal;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+}
