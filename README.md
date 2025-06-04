@@ -84,7 +84,7 @@ const data = [
 ];
 
 function handleRowClick(record) {
-  alert(`Вы выбрали строку: ${record}`);
+  alert(`Вы выбрали строку: ${JSON.stringify(record)}`);
 }
 
 function App() {
